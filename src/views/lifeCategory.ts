@@ -102,6 +102,7 @@ export function lifeCategoryBody(
         </div>
       </div>
     `
+    : '';
 
   return `
     <p class="muted" style="font-size:13px; margin-bottom:8px;">
