@@ -35,16 +35,87 @@ export function troubleTopBody(
     return `${base}/life/${catSlug}/`;
   };
 
-  // 6.2 最初に表示する8カード（主語・述語に統一）
+  // 13大カテゴリすべてをバナー（カード）として定義
   const cards = [
-    { title: '🌱 磐田市に住みたい', href: getTopicLink('living-soon', 'want-to-live') },
-    { title: '🚚 磐田市へ引っ越してきた', href: getTopicLink('start-living', 'moved-in') },
-    { title: '🏠 家・住まいで探す、困っている', href: `${base}/life/housing/` },
-    { title: '🗑️ ごみを出したい、捨てたい', href: getTopicLink('start-living', 'how-to-garbage') },
-    { title: '🌳 公園・施設を探したい', href: getTopicLink('play-out', 'find-parks') },
-    { title: '👶 子育てでわからない、困っている', href: `${base}/life/family-grow/` },
-    { title: '🧓 介護・親のことでわからない、困っている', href: `${base}/life/parents-care/` },
-    { title: '🚨 避難情報・災害リスクを確認する', href: `${base}/life/emergency/`, isUrgent: true }
+    { 
+      title: '🌱 これから暮らすことを考えている', 
+      href: `${base}/life/living-soon/`, 
+      sub: '移住の検討、学校区や交通の確認',
+      slug: 'living-soon'
+    },
+    { 
+      title: '🚚 引っ越してきた、暮らし始めた', 
+      href: `${base}/life/start-living/`, 
+      sub: '転入届、マイナンバー、ごみ出し手続き',
+      slug: 'start-living'
+    },
+    { 
+      title: '🏠 家・住まいで探す、困っている', 
+      href: `${base}/life/housing/`, 
+      sub: '市営住宅、耐震補強、空き家や実家の整理',
+      slug: 'housing'
+    },
+    { 
+      title: '👶 子育てでわからない、困っている', 
+      href: `${base}/life/family-grow/`, 
+      sub: '妊娠・出産の手続き、児童手当や保育園',
+      slug: 'family-grow'
+    },
+    { 
+      title: '🌳 公園や施設を探したい、出かけたい', 
+      href: `${base}/life/play-out/`, 
+      sub: '近くの公園、図書館や体育館の利用',
+      slug: 'play-out'
+    },
+    { 
+      title: '🎒 学校や教育、子どもの育ちで知りたい', 
+      href: `${base}/life/education/`, 
+      sub: '小中学校の転入校、放課後児童クラブ',
+      slug: 'education'
+    },
+    { 
+      title: '🩺 病気やケガ、日頃の健康で備えたい', 
+      href: `${base}/life/health-medical/`, 
+      sub: '休日夜間救急、各種健康診断や予防接種',
+      slug: 'health-medical'
+    },
+    { 
+      title: '💼 仕事を探す、日々の生活で困っている', 
+      href: `${base}/life/work-life/`, 
+      sub: '就職支援、国民年金や国民健康保険',
+      slug: 'work-life'
+    },
+    { 
+      title: '🧓 介護・親のことでわからない、困っている', 
+      href: `${base}/life/parents-care/`, 
+      sub: '高齢者支援、介護保険手続きや相談窓口',
+      slug: 'parents-care'
+    },
+    { 
+      title: '🚨 避難情報・災害リスクを確認する', 
+      href: `${base}/life/emergency/`, 
+      sub: '台風・大雨、地震対策や避難所のマップ',
+      isUrgent: true,
+      slug: 'emergency'
+    },
+    { 
+      title: '🤝 どこに相談すればいいかわからない', 
+      href: `${base}/life/troubles-consult/`, 
+      sub: '生活費の悩み、税金の未納、各種専門相談',
+      slug: 'troubles-consult'
+    },
+    { 
+      title: '🌸 身近な人が亡くなった、もしもの準備', 
+      href: `${base}/life/end-of-life/`, 
+      sub: '死亡届・おくやみ手続き、相続や実家の整理',
+      slug: 'end-of-life'
+    },
+    { 
+      title: '👋 磐田市から引っ越す、転出する', 
+      href: `${base}/life/moving-out/`, 
+      sub: '転出届の手続き、水道の解約や粗大ごみ',
+      slug: 'moving-out'
+    }
   ];
 
   // emergencyMode の場合は防災カードを先頭にする
@@ -57,9 +128,9 @@ export function troubleTopBody(
   }
 
   const cardsHtml = cards.map(c => `
-    <a class="u-card ${c.isUrgent ? 'u-bousai-active' : ''}" href="${c.href}" ${c.isUrgent ? 'style="background:#c0461e; font-weight:900;"' : 'style="background:var(--green);"'}>
-      <span>${esc(c.title)}</span>
-      <span class="s">${c.isUrgent ? '【緊急】避難情報・災害リスクを確認' : '暮らしのナビ'}</span>
+    <a class="u-card ${c.isUrgent ? 'u-bousai-active' : ''}" href="${c.href}" ${c.isUrgent ? 'style="background:#c0461e; font-weight:900; color:#fff;"' : 'style="background:var(--green); color:#fff;"'}>
+      <span style="font-size:16.5px; font-weight:800;">${esc(c.title)}</span>
+      <span class="s" style="margin-top:6px; font-size:12.5px; opacity:0.9; font-weight:500;">${esc(c.isUrgent ? '【緊急】避難情報・災害リスクを確認' : c.sub)}</span>
     </a>
   `).join('');
 
@@ -156,12 +227,13 @@ export function troubleTopBody(
     <button type="submit">探す</button>
   </form>
 
-  <div class="urgent-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 24px;">
+  <h2 class="sec">くらしの場面・目的から選ぶ</h2>
+  <div class="urgent-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 32px;">
     ${cardsHtml}
   </div>
 
   <div id="life-categories-section" style="margin-bottom: 32px;">
-    <h2 class="sec">生活ナビゲーション（13大項目）</h2>
+    <h2 class="sec">具体的な手続き・相談窓口から探す</h2>
     <div class="life-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
       ${categoriesListHtml}
     </div>
