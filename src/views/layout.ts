@@ -122,8 +122,16 @@ html{font-size:17px}
 }
 `;
 
+const colors: Record<string, { main: string; dark: string }> = {
+  iwata: { main: '#0074AE', dark: '#005986' },
+  fukuroi: { main: '#5BAF35', dark: '#468729' },
+  kakegawa: { main: '#0A592D', dark: '#084724' },
+  hamamatsu: { main: '#005A93', dark: '#004672' },
+  mori: { main: '#82AD3F', dark: '#678b31' },
+};
+
 export function disclaimerText(muni: Municipality): string {
-  return `${muni.short_name}ハックは${muni.name}公式サイトではありません。${muni.name}が公開している公式情報をもとに、市民の皆さまが必要な情報へたどり着きやすいよう整理・解説する民間運営の地域情報サイトです。最新・正確な情報は必ず公式ページで確認してください。`;
+  return `${muni.short_name}ライフハックは${muni.name}公式サイトではありません。最新・正確な情報は必ず公式ページで確認してください。`;
 }
 
 export interface LayoutOpts {
@@ -137,16 +145,25 @@ export interface LayoutOpts {
 export function layout(opts: LayoutOpts): string {
   const { muni, title, body, categoriesNav = [], isEnshu = false } = opts;
   const base = isEnshu ? '/enshu' : `/${muni.slug}`;
-  const brand = isEnshu ? '遠州ハック' : `${muni.short_name}ハック`;
+  const brand = isEnshu ? '遠州ライフハック' : `${muni.short_name}ライフハック`;
   const nav = categoriesNav
     .map((c) => `<a href="${base}/category/${esc(c.id)}/">${esc(c.name)}</a>`)
     .join('');
+  
+  const color = colors[muni.slug] || { main: '#0074AE', dark: '#005986' };
+
   return `<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)} | ${esc(brand)}</title>
 <meta name="description" content="${esc(disclaimerText(muni))}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>${STYLE}</style>
+<style>
+  :root {
+    --green: ${color.main};
+    --green-d: ${color.dark};
+  }
+</style>
 </head><body>
 <header class="site"><div class="wrap">
   <a class="logo" href="${base}/">${esc(brand)}</a>
@@ -158,7 +175,7 @@ ${nav ? `<nav class="cats"><div class="wrap">${nav}</div></nav>` : ''}
 <footer class="site"><div class="wrap">
   <div><b style="color:#fff">${esc(brand)}</b></div>
   <div class="muted" style="margin:6px 0 10px">運営：富士ヶ丘サービス ／ 代表：大石浩之</div>
-  <div>${isEnshu ? '' : `<a href="${esc(muni.official_base_url)}" rel="noopener">${esc(muni.name)}公式サイト ↗</a> ／ `}<a href="/enshu/">遠州ハック</a></div>
+  <div>${isEnshu ? '' : `<a href="${esc(muni.official_base_url)}" rel="noopener">${esc(muni.name)}公式サイト ↗</a> ／ `}<a href="/enshu/">遠州ライフハック</a></div>
   <div class="muted" style="margin-top:10px;font-size:12px">本サイトは公式情報の転載サイトではありません。公式情報を整理・分類し、最終的に必ず公式ページへご案内します。</div>
 </div></footer>
 </body></html>`;

@@ -1,15 +1,10 @@
-// ============================================================
-// 磐田ハック / 遠州ハック  Cloudflare Worker エントリ
-//  - fetch     : ルーティング（自治体トップ / カテゴリ / 記事 / 遠州 / 管理）
-//  - scheduled : 日次クロール（cron）
-// ============================================================
-
 import type { Env, FeedbackType } from './types';
 import { getMunicipalityBySlug, insertFeedback, seedTroubleGuides } from './db/queries';
 import { renderCategory } from './routes/category';
 import { renderArticle } from './routes/article';
 import { renderEnshuTop, renderEnshuCategory } from './routes/enshu';
 import { renderTroubleTop, renderTroubleGuide, handleNavigate } from './routes/trouble';
+import { renderLifeCategory, renderLifeTopic } from './routes/life';
 import { crawlActive, crawlBySlug } from './crawler/runCrawl';
 import { htmlResponse } from './views/layout';
 
@@ -49,7 +44,7 @@ export default {
       if (seg.length === 0) {
         const muni = await getMunicipalityBySlug(env.DB, env.DEFAULT_MUNICIPALITY || 'iwata');
         if (!muni) return text('既定の自治体が見つかりません。seed を投入してください。', 500);
-        return await renderTroubleTop(env, muni);
+        return await renderTroubleTop(env, muni, undefined, url);
       }
 
       // 遠州ハック  /enshu , /enshu/:categoryId
@@ -62,9 +57,14 @@ export default {
       const muni = await getMunicipalityBySlug(env.DB, seg[0]);
       if (!muni) return notFound();
 
-      if (seg.length === 1) return await renderTroubleTop(env, muni); // 困りごとトップ
+      if (seg.length === 1) return await renderTroubleTop(env, muni, undefined, url); // 困りごとトップ
       if (seg[1] === 'trouble' && seg[2]) return await renderTroubleGuide(env, muni, seg[2]);
       if (seg[1] === 'navigate') return await handleNavigate(env, muni, url.searchParams.get('q') || '');
+      if (seg[1] === 'life') {
+        if (seg.length === 2) return await renderTroubleTop(env, muni, undefined, url);
+        if (seg.length === 3) return await renderLifeCategory(env, muni, seg[2]);
+        if (seg.length === 4) return await renderLifeTopic(env, muni, seg[2], seg[3]);
+      }
       if (seg[1] === 'category' && seg[2]) return await renderCategory(env, muni, seg[2]);
       if (seg[1] === 'article' && seg[2]) return await renderArticle(env, muni, seg[2]);
 
@@ -144,11 +144,25 @@ async function renderSitemapXml(env: Env, url: URL): Promise<Response> {
   const locs = [`${origin}/`, `${origin}/enshu/`];
   for (const m of r.results ?? []) {
     locs.push(`${origin}/${m.slug}/`);
-    const g = await env.DB
-      .prepare("SELECT slug FROM trouble_guides WHERE municipality_id = ? AND status = 'published' ORDER BY display_order")
+    
+    // 大項目
+    const cats = await env.DB
+      .prepare('SELECT id, slug FROM life_categories WHERE municipality_id = ? ORDER BY display_order')
       .bind(m.id)
-      .all<{ slug: string }>();
-    for (const row of g.results ?? []) locs.push(`${origin}/${m.slug}/trouble/${row.slug}/`);
+      .all<{ id: string; slug: string }>();
+    
+    for (const c of cats.results ?? []) {
+      locs.push(`${origin}/${m.slug}/life/${c.slug}/`);
+      
+      // 中項目
+      const tops = await env.DB
+        .prepare('SELECT slug FROM life_topics WHERE municipality_id = ? AND category_id = ? AND status = \'published\' ORDER BY display_order')
+        .bind(m.id, c.id)
+        .all<{ slug: string }>();
+      for (const t of tops.results ?? []) {
+        locs.push(`${origin}/${m.slug}/life/${c.slug}/${t.slug}/`);
+      }
+    }
   }
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

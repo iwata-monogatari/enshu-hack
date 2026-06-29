@@ -130,20 +130,56 @@ export interface TroubleGuide {
   steps: ProcedureStep[];
 }
 
-/** 困りごとページのDB読み出し行（trouble_guides） */
-export interface TroubleGuideRow {
+export interface LifeCategoryRow {
   id: string;
   municipality_id: string;
   slug: string;
   title: string;
-  situation_label: string | null;
-  summary: string | null;
-  first_action: string | null;
-  target_person: string | null;
-  priority: string | null;
+  subtitle: string | null;
+  icon: string | null;
   display_order: number | null;
+  is_featured: number;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface LifeTopicRow {
+  id: string;
+  municipality_id: string;
+  category_id: string;
+  slug: string;
+  title: string;
+  icon: string | null;
+  summary: string | null;
+  display_order: number | null;
+  rank: string | null;
+  status: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+/** 困りごとページのDB読み出し行（trouble_guides） */
+export interface TroubleGuideRow {
+  id: string;
+  municipality_id: string;
+  topic_id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  who_needs_this: string | null;
+  first_action: string | null;
+  today_tasks: string | null;
+  this_week_tasks: string | null;
+  later_tasks: string | null;
+  required_items: string | null;
+  municipal_window: string | null;
+  outside_agencies: string | null;
+  caution: string | null;
+  official_sources: string | null;
   last_verified_at: string | null;
   status: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ProcedureStepRow {
@@ -158,7 +194,6 @@ export interface ProcedureStepRow {
   official_page_id: string | null;
   outside_agency: string | null;
   is_municipal: number;
-  nav_tags: string | null;        // カンマ区切り
   note: string | null;
 }
 
