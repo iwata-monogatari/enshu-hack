@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS life_topics (
   display_order INTEGER,
   rank TEXT,
   status TEXT DEFAULT 'draft',
+  consult_type TEXT NOT NULL DEFAULT 'other',
   created_at TEXT,
   updated_at TEXT,
   UNIQUE (municipality_id, slug)

@@ -32,7 +32,7 @@ function renderStep(s: ProcedureStepRow): string {
   const meta: string[] = [];
   if (where) meta.push(`窓口：${esc(where)}`);
   if (s.note) meta.push(esc(s.note));
-  return `<div class="step" data-order="${s.step_order}" data-tags="${esc(s.nav_tags || '')}">
+  return `<div class="step" data-order="${s.step_order}">
     <div class="task">${chips.join('')}${esc(s.task_name)}</div>
     ${meta.length ? `<div class="meta">${meta.join('｜')}</div>` : ''}
     ${itemsHtml}
@@ -87,7 +87,7 @@ export function troubleGuideBody(
   const windows = Array.from(new Set(steps.map((s) => s.window_name).filter(Boolean)));
   const phoneCheck = `<h2 class="sec">電話する前チェック</h2>
     <div class="step"><ul class="items">
-      <li>用件を一言で伝える（「${esc(guide.situation_label || guide.title)}」の件）</li>
+      <li>用件を一言で伝える（「${esc(guide.title)}」の件）</li>
       <li>本人確認書類（運転免許証・マイナンバーカードなど）が手元にあるか</li>
       <li>関係する書類（保険証・通知書など）を用意したか</li>
       <li>窓口の受付時間を確認したか${windows.length ? `（${windows.map((w) => esc(w!)).join('・')} など）` : ''}</li>

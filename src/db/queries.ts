@@ -112,8 +112,8 @@ export async function getChangesSince(
     .prepare(
       `SELECT * FROM daily_changes
        WHERE municipality_id IN (${placeholders})
-         AND change_type != 'removed'
-         AND detected_at >= ?
+          AND change_type != 'removed'
+          AND detected_at >= ?
        ORDER BY detected_at DESC LIMIT ?`,
     )
     .bind(...municipalityIds, sinceISO, limit)
@@ -266,6 +266,7 @@ export async function insertFeedback(
 
 /**
  * 困りごとデータ（lifeData.ts）をDBへ投入（upsert）。
+ * D1 Database batch を使って一括実行し、タイムアウトを防ぎます。
  */
 export async function seedTroubleGuides(
   db: D1Database,
@@ -277,20 +278,23 @@ export async function seedTroubleGuides(
   let guideCount = 0;
   let stepCount = 0;
 
+  const statements: D1PreparedStatement[] = [];
+
   for (let cIdx = 0; cIdx < LIFE_DATA.length; cIdx++) {
     const cat = LIFE_DATA[cIdx];
     const catId = `${municipalityId}__lc__${cat.slug}`;
 
     // 1. 大項目登録
-    await db
-      .prepare(
-        `INSERT INTO life_categories (id, municipality_id, slug, title, subtitle, icon, display_order, is_featured, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT(municipality_id, slug) DO UPDATE SET
-           title=excluded.title, subtitle=excluded.subtitle, icon=excluded.icon, display_order=excluded.display_order, updated_at=excluded.updated_at`
-      )
-      .bind(catId, municipalityId, cat.slug, cat.title, cat.subtitle, cat.icon, cIdx + 1, 0, now, now)
-      .run();
+    statements.push(
+      db
+        .prepare(
+          `INSERT INTO life_categories (id, municipality_id, slug, title, subtitle, icon, display_order, is_featured, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           ON CONFLICT(municipality_id, slug) DO UPDATE SET
+             title=excluded.title, subtitle=excluded.subtitle, icon=excluded.icon, display_order=excluded.display_order, updated_at=excluded.updated_at`
+        )
+        .bind(catId, municipalityId, cat.slug, cat.title, cat.subtitle, cat.icon, cIdx + 1, 0, now, now)
+    );
     categoryCount++;
 
     for (let tIdx = 0; tIdx < cat.topics.length; tIdx++) {
@@ -298,15 +302,16 @@ export async function seedTroubleGuides(
       const topicId = `${municipalityId}__lt__${top.slug}`;
 
       // 2. 中項目登録
-      await db
-        .prepare(
-          `INSERT INTO life_topics (id, municipality_id, category_id, slug, title, icon, summary, display_order, rank, status, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(municipality_id, slug) DO UPDATE SET
-             title=excluded.title, icon=excluded.icon, summary=excluded.summary, display_order=excluded.display_order, rank=excluded.rank, status=excluded.status, updated_at=excluded.updated_at`
-        )
-        .bind(topicId, municipalityId, catId, top.slug, top.title, top.icon, top.summary, tIdx + 1, top.rank, 'published', now, now)
-        .run();
+      statements.push(
+        db
+          .prepare(
+            `INSERT INTO life_topics (id, municipality_id, category_id, slug, title, icon, summary, display_order, rank, status, consult_type, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(municipality_id, slug) DO UPDATE SET
+               title=excluded.title, icon=excluded.icon, summary=excluded.summary, display_order=excluded.display_order, rank=excluded.rank, status=excluded.status, consult_type=excluded.consult_type, updated_at=excluded.updated_at`
+          )
+          .bind(topicId, municipalityId, catId, top.slug, top.title, top.icon, top.summary, tIdx + 1, top.rank, 'published', top.consult_type || 'other', now, now)
+      );
       topicCount++;
 
       // 3. トラブルガイド登録
@@ -317,89 +322,97 @@ export async function seedTroubleGuides(
       const requiredText = top.required_items ? top.required_items.join('\n') : '';
       const officialSources = top.official_sources || '';
 
-      await db
-        .prepare(
-          `INSERT INTO trouble_guides (
-            id, municipality_id, topic_id, slug, title, summary, who_needs_this, first_action,
-            today_tasks, this_week_tasks, later_tasks, required_items, municipal_window,
-            outside_agencies, caution, official_sources, last_verified_at, status, created_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(municipality_id, slug) DO UPDATE SET
-            title=excluded.title, summary=excluded.summary, who_needs_this=excluded.who_needs_this,
-            first_action=excluded.first_action, today_tasks=excluded.today_tasks, this_week_tasks=excluded.this_week_tasks,
-            later_tasks=excluded.later_tasks, required_items=excluded.required_items, municipal_window=excluded.municipal_window,
-            outside_agencies=excluded.outside_agencies, caution=excluded.caution, official_sources=excluded.official_sources,
-            last_verified_at=excluded.last_verified_at, status=excluded.status, updated_at=excluded.updated_at`
-        )
-        .bind(
-          guideId,
-          municipalityId,
-          topicId,
-          top.slug,
-          top.title,
-          top.summary,
-          top.who_needs_this,
-          top.first_action,
-          todayText,
-          thisWeekText,
-          laterText,
-          requiredText,
-          top.municipal_window || null,
-          top.outside_agencies || null,
-          top.caution || null,
-          officialSources,
-          '2026-06-29',
-          'published',
-          now,
-          now
-        )
-        .run();
+      statements.push(
+        db
+          .prepare(
+            `INSERT INTO trouble_guides (
+              id, municipality_id, topic_id, slug, title, summary, who_needs_this, first_action,
+              today_tasks, this_week_tasks, later_tasks, required_items, municipal_window,
+              outside_agencies, caution, official_sources, last_verified_at, status, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(municipality_id, slug) DO UPDATE SET
+              title=excluded.title, summary=excluded.summary, who_needs_this=excluded.who_needs_this,
+              first_action=excluded.first_action, today_tasks=excluded.today_tasks, this_week_tasks=excluded.this_week_tasks,
+              later_tasks=excluded.later_tasks, required_items=excluded.required_items, municipal_window=excluded.municipal_window,
+              outside_agencies=excluded.outside_agencies, caution=excluded.caution, official_sources=excluded.official_sources,
+              last_verified_at=excluded.last_verified_at, status=excluded.status, updated_at=excluded.updated_at`
+          )
+          .bind(
+            guideId,
+            municipalityId,
+            topicId,
+            top.slug,
+            top.title,
+            top.summary,
+            top.who_needs_this,
+            top.first_action,
+            todayText,
+            thisWeekText,
+            laterText,
+            requiredText,
+            top.municipal_window || null,
+            top.outside_agencies || null,
+            top.caution || null,
+            officialSources,
+            '2026-06-29',
+            'published',
+            now,
+            now
+          )
+      );
       guideCount++;
 
-      // 4. 手順ステップの登録（もし今日・今週・後日のタスクがあれば、それに従って procedure_steps レコードに分解して入れる）
-      await db.prepare('DELETE FROM procedure_steps WHERE trouble_guide_id = ?').bind(guideId).run();
+      // 4. 手順ステップの登録
+      statements.push(db.prepare('DELETE FROM procedure_steps WHERE trouble_guide_id = ?').bind(guideId));
+
       let sIdx = 1;
       if (top.today_tasks) {
         for (const t of top.today_tasks) {
-          await db
-            .prepare(
-              `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
-               VALUES (?, ?, ?, ?, ?, ?, ?)`
-            )
-            .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'today', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
-            .run();
+          statements.push(
+            db
+              .prepare(
+                `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`
+              )
+              .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'today', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
+          );
           sIdx++;
           stepCount++;
         }
       }
       if (top.this_week_tasks) {
         for (const t of top.this_week_tasks) {
-          await db
-            .prepare(
-              `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
-               VALUES (?, ?, ?, ?, ?, ?, ?)`
-            )
-            .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'this_week', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
-            .run();
+          statements.push(
+            db
+              .prepare(
+                `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`
+              )
+              .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'this_week', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
+          );
           sIdx++;
           stepCount++;
         }
       }
       if (top.later_tasks) {
         for (const t of top.later_tasks) {
-          await db
-            .prepare(
-              `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
-               VALUES (?, ?, ?, ?, ?, ?, ?)`
-            )
-            .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'later', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
-            .run();
+          statements.push(
+            db
+              .prepare(
+                `INSERT INTO procedure_steps (id, trouble_guide_id, step_order, timing, task_name, window_name, is_municipal)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`
+              )
+              .bind(`${guideId}__s${sIdx}`, guideId, sIdx, 'later', t, top.municipal_window || null, top.municipal_window ? 1 : 0)
+          );
           sIdx++;
           stepCount++;
         }
       }
     }
   }
+
+  // 最後に一括バッチ実行
+  await db.batch(statements);
 
   return { categories: categoryCount, topics: topicCount, guides: guideCount, steps: stepCount };
 }

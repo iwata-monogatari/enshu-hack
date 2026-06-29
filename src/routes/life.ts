@@ -88,7 +88,7 @@ export async function renderLifeTopic(
   }
 
   const steps = await getProcedureSteps(env.DB, guide.id);
-  const body = lifeTopicBody(muni, categorySlug, topicSlug, guide, steps);
+  const body = lifeTopicBody(muni, categorySlug, topicSlug, guide, steps, topic.consult_type);
 
   return htmlResponse(
     layout({

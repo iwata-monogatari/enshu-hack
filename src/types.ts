@@ -154,6 +154,7 @@ export interface LifeTopicRow {
   display_order: number | null;
   rank: string | null;
   status: string | null;
+  consult_type: string;
   created_at: string | null;
   updated_at: string | null;
 }
