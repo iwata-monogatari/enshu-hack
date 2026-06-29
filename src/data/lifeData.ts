@@ -1066,7 +1066,7 @@ export const LIFE_DATA: SeedCategory[] = [
         rank: 'A++',
         who_needs_this: '介護が負担になり、こころや体が限界を感じている家族。',
         first_action: 'まず担当ケアマネジャー、または最寄りの包括支援センターへ状況を相談しましょう。',
-        municipal_window: '高寿支援課（または「富士ヶ丘サービス」へお気軽にご相談ください）',
+        municipal_window: '高寿支援課（またはお近くの地域包括支援センター）',
         official_sources: '介護の相談・地域包括支援センター（磐田市）|https://www.city.iwata.shizuoka.jp/kenkou_fukushi/kaigohoken/1001815.html'
       },
       {
@@ -1087,7 +1087,7 @@ export const LIFE_DATA: SeedCategory[] = [
         summary: '空き家があるが管理・処分・相続手続きをどうすればよいかのアドバイス窓口です。',
         rank: 'A++',
         who_needs_this: '空き家化した実家をお持ちで、管理や処分について相談したい家族。',
-        first_action: 'まず「富士ヶ丘サービス」に連絡して、空き家整理や処分の進め方を相談しましょう。',
+        first_action: 'まず磐田市の建築住宅課（空き家対策係）や、必要に応じて専門家へ相談しましょう。',
         municipal_window: '建築住宅課 空き家対策係',
         official_sources: '空き家相談会等（磐田市）|https://www.city.iwata.shizuoka.jp/kurashi_tetsuzuki/sumai_seikatsu/1001588.html'
       },
@@ -1142,7 +1142,7 @@ export const LIFE_DATA: SeedCategory[] = [
         summary: '預貯金の名義変更、不動産の相続登記義務化への対応情報です。',
         rank: 'A++',
         who_needs_this: '亡くなった親の預貯金や土地・家を相続する親族。',
-        first_action: '不動産の相続登記は2024年から義務化されています。法務局（磐田支局）または司法書士へ「富士ヶ丘サービス」経由で相談しましょう。',
+        first_action: '不動産の相続登記は義務化されています。法務局（磐田支局）や、最寄りの司法書士などの専門家へ相談しましょう。',
         today_tasks: ['亡くなった方の出生から死亡までのすべての戸籍謄本を収集する'],
         outside_agencies: '静岡地方法務局 磐田支局',
         official_sources: '相続登記の義務化について（法務省）|https://www.lfb.mof.go.jp/tokai/shizuoka/index.html'
@@ -1168,7 +1168,7 @@ export const LIFE_DATA: SeedCategory[] = [
         summary: '相続した実家の活用、売却、適正管理、解体などの選択肢です。',
         rank: 'A++',
         who_needs_this: '誰も住まなくなる磐田市内の実家を引き継ぐことになった方。',
-        first_action: '「富士ヶ丘サービス」に連絡して、今後の管理や空き家の活用・解体の相談を始めましょう。',
+        first_action: '実家の現状を確認し、磐田市の空き家等相談窓口や、必要に応じて地域の専門家に相談しましょう。',
         today_tasks: ['実家の戸締まりとライフラインの契約状況を確認する'],
         official_sources: '空き家等相談窓口（磐田市）|https://www.city.iwata.shizuoka.jp/kurashi_tetsuzuki/sumai_seikatsu/1001588.html'
       },
@@ -1179,7 +1179,7 @@ export const LIFE_DATA: SeedCategory[] = [
         summary: '相続後に実家が空き家になった際の、保安・管理の注意点です。',
         rank: 'A++',
         who_needs_this: '実家が誰も住まない状態（空き家）になり、管理をしたい方。',
-        first_action: '草木が近隣に侵入していないか、「富士ヶ丘サービス」や近隣住民に現況確認を依頼しましょう。',
+        first_action: '草木が近隣に侵入していないか、定期的に実家を訪問するか、近隣の方に現況確認をお願いしましょう。',
         official_sources: '空き家等の適切な管理（磐田市）|https://www.city.iwata.shizuoka.jp/kurashi_tetsuzuki/sumai_seikatsu/1001588.html'
       },
       {

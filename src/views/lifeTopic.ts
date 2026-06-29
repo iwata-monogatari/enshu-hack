@@ -183,7 +183,7 @@ export function lifeTopicBody(
                 <span>🏠</span> <span>家・住まいについて相談したい</span>
               </h4>
               <p style="margin:0 0 16px 0; font-size:13px; line-height:1.5; color:var(--mut);">
-                相続した実家、空き家、住み替え、住宅購入や売却など、住まいに関するご相談を承っています。
+                富士ヶ丘サービスでも、相続した実家・空き家・親の家の整理についてご相談をお受けしています。介護と不動産の両方に関わる立場から、売却・管理・解体・今後の住まい方について整理のお手伝いをしています。必要に応じて、相談先の一つとしてご利用ください。
               </p>
               
               <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:10px; font-size:12px; color:var(--mut); line-height:1.5;">
@@ -198,7 +198,7 @@ export function lifeTopicBody(
             </div>
             <div style="margin-top:16px;">
               <a href="https://www.fujigaoka-service.co.jp/" target="_blank" rel="noopener" class="print-btn" style="display:flex; justify-content:center; text-align:center; background:#fff; border:1px solid var(--line); color:var(--green-d); border-radius:6px; padding:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; width:100%; transition: background 0.2s;">
-                住まいの相談先を見る
+                相続した実家・空き家について相談する
               </a>
             </div>
           </div>
@@ -210,7 +210,7 @@ export function lifeTopicBody(
                 <span>❤️</span> <span>介護・高齢者について相談したい</span>
               </h4>
               <p style="margin:0 0 16px 0; font-size:13px; line-height:1.5; color:var(--mut);">
-                ケアマネジャー、介護保険、介護施設、高齢者支援などのご相談を承っています。
+                ケアマネジャー、介護保険、介護施設、高齢者支援などのご相談を承っています。必要に応じて、相談先の一つとしてご利用ください。
               </p>
               
               <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:10px; font-size:11.5px; color:var(--mut); line-height:1.5;">
