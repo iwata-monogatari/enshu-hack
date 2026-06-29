@@ -15,6 +15,24 @@ export default {
     const seg = path.split('/').filter(Boolean); // [] for '/'
 
     try {
+      // ── 新ドメイン移行（2026-06）：公開アクセスは iwata.enshu-lifehack.com へ 301 ──
+      // ただし再生成(snapshot)・管理(admin)用に CRAWL_TOKEN 付きアクセスは素通りさせ、
+      // 従来の動的レンダリングを維持する（cron クローラーは scheduled() 側で別途継続）。
+      {
+        const token = url.searchParams.get('token');
+        const bypass = !!env.CRAWL_TOKEN && token === env.CRAWL_TOKEN;
+        if (!bypass) {
+          const dest = new URL('https://iwata.enshu-lifehack.com');
+          // /iwata 配下はサブドメイン直下へ平坦化、それ以外はそのまま
+          dest.pathname =
+            url.pathname === '/iwata' || url.pathname.startsWith('/iwata/')
+              ? url.pathname.replace(/^\/iwata/, '') || '/'
+              : url.pathname || '/';
+          dest.search = url.search;
+          return Response.redirect(dest.toString(), 301);
+        }
+      }
+
       // 静的アセット（robots.txt / favicon 等）は ASSETS へ委譲
       if (path === '/robots.txt' || path === '/favicon.svg' || path === '/favicon.ico') {
         return env.ASSETS.fetch(req);
