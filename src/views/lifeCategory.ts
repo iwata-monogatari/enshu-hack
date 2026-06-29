@@ -36,7 +36,32 @@ export function lifeCategoryBody(
         
         <div class="consult-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px;">
           
-          <!-- カード 1: 住まい -->
+          <!-- カード 1: 磐田物語 -->
+          <div class="consult-card" style="background:#fafafa; border: 1px solid var(--line); border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.01);">
+            <div>
+              <h4 style="margin:0 0 8px 0; font-size:15.5px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;">
+                <span>📖</span> <span>磐田の歴史・文化を知りたい</span>
+              </h4>
+              <p style="margin:0 0 16px 0; font-size:13px; line-height:1.5; color:var(--mut);">
+                磐田の歴史や文化、地域の記憶を紹介しています。
+              </p>
+              
+              <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:10px; font-size:12px; color:var(--mut); line-height:1.5;">
+                <span style="font-weight:700; color:var(--ink);">お問い合わせ</span><br>
+                磐田物語<br>
+                <div style="margin-top:6px;">
+                  <a href="https://iwata-monogatari.pages.dev/" target="_blank" rel="noopener" style="color:var(--green-d); text-decoration:underline;">ホームページ ↗</a>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <a href="https://iwata-monogatari.pages.dev/" target="_blank" rel="noopener" class="print-btn" style="display:flex; justify-content:center; text-align:center; background:#fff; border:1px solid var(--line); color:var(--green-d); border-radius:6px; padding:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; width:100%; transition: background 0.2s;">
+                磐田物語を見る
+              </a>
+            </div>
+          </div>
+
+          <!-- カード 2: 住まい -->
           <div class="consult-card" style="background:#fafafa; border: 1px solid var(--line); border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.01);">
             <div>
               <h4 style="margin:0 0 8px 0; font-size:15.5px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;">
@@ -63,7 +88,7 @@ export function lifeCategoryBody(
             </div>
           </div>
 
-          <!-- カード 2: 介護 -->
+          <!-- カード 3: 介護 -->
           <div class="consult-card" style="background:#fafafa; border: 1px solid var(--line); border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.01);">
             <div>
               <h4 style="margin:0 0 8px 0; font-size:15.5px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;">
@@ -87,31 +112,6 @@ export function lifeCategoryBody(
             <div style="margin-top:16px;">
               <a href="https://www.fujigaoka-service.info/" target="_blank" rel="noopener" class="print-btn" style="display:flex; justify-content:center; text-align:center; background:#fff; border:1px solid var(--line); color:var(--green-d); border-radius:6px; padding:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; width:100%; transition: background 0.2s;">
                 介護の相談先を見る
-              </a>
-            </div>
-          </div>
-
-          <!-- カード 3: 磐田物語 -->
-          <div class="consult-card" style="background:#fafafa; border: 1px solid var(--line); border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.01);">
-            <div>
-              <h4 style="margin:0 0 8px 0; font-size:15.5px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;">
-                <span>📖</span> <span>磐田の歴史・文化を知りたい</span>
-              </h4>
-              <p style="margin:0 0 16px 0; font-size:13px; line-height:1.5; color:var(--mut);">
-                磐田の歴史や文化、地域の記憶を紹介しています。
-              </p>
-              
-              <div style="border-top:1px solid var(--line); padding-top:10px; margin-top:10px; font-size:12px; color:var(--mut); line-height:1.5;">
-                <span style="font-weight:700; color:var(--ink);">お問い合わせ</span><br>
-                磐田物語<br>
-                <div style="margin-top:6px;">
-                  <a href="https://iwata-monogatari.pages.dev/" target="_blank" rel="noopener" style="color:var(--green-d); text-decoration:underline;">ホームページ ↗</a>
-                </div>
-              </div>
-            </div>
-            <div style="margin-top:16px;">
-              <a href="https://iwata-monogatari.pages.dev/" target="_blank" rel="noopener" class="print-btn" style="display:flex; justify-content:center; text-align:center; background:#fff; border:1px solid var(--line); color:var(--green-d); border-radius:6px; padding:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; width:100%; transition: background 0.2s;">
-                磐田物語を見る
               </a>
             </div>
           </div>
