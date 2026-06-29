@@ -2,8 +2,8 @@
 
 Current confirmed production Worker version:
 
-- `5ab901ac-fe25-4c0b-9d65-3bc1550cc825`
-- Confirmed: consult card sorting by `consult_type` is reflected in production.
+- `398ef59c-3f1f-4fca-90ac-222341a8983b`
+- Confirmed: index life-category procedure section is collapsed by default, and consult card sorting by `consult_type` is reflected in production.
 - Verification:
   - `real_estate`: 住まい > 磐田物語 > 介護
   - `nursing`: 介護 > 住まい > 磐田物語

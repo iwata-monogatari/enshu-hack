@@ -15,7 +15,7 @@
     "crawl:local": "wrangler dev --test-scheduled",
     "typecheck": "tsc --noEmit",
     "deploy:force": "wrangler deploy",
-    "rollback:confirmed": "wrangler rollback 5ab901ac-fe25-4c0b-9d65-3bc1550cc825 --yes --message \"Restore confirmed consult sorting production version\""
+    "rollback:confirmed": "wrangler rollback 398ef59c-3f1f-4fca-90ac-222341a8983b --yes --message \"Restore confirmed collapsed index production version\""
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240605.0",

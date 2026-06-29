@@ -232,12 +232,15 @@ export function troubleTopBody(
     ${cardsHtml}
   </div>
 
-  <div id="life-categories-section" style="margin-bottom: 32px;">
-    <h2 class="sec">具体的な手続き・相談窓口から探す</h2>
-    <div class="life-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+  <details id="life-categories-section" class="life-categories-collapsible" style="margin-bottom: 32px;">
+    <summary class="life-categories-summary">
+      <span class="sec summary-title">具体的な手続き・相談窓口から探す</span>
+      <span class="summary-hint">開く</span>
+    </summary>
+    <div class="life-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-top: 12px;">
       ${categoriesListHtml}
     </div>
-  </div>
+  </details>
 
   ${bottomNavHtml}
 
@@ -252,6 +255,45 @@ export function troubleTopBody(
   </div>
 
   <style>
+    .life-categories-collapsible {
+      background: transparent;
+    }
+    .life-categories-summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 12px;
+    }
+    .life-categories-summary::-webkit-details-marker {
+      display: none;
+    }
+    .life-categories-summary .summary-title {
+      margin: 0;
+      flex: 1;
+    }
+    .summary-hint {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--green-d);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .life-categories-collapsible[open] .summary-hint {
+      font-size: 0;
+    }
+    .life-categories-collapsible[open] .summary-hint::before {
+      content: '閉じる';
+      font-size: 13px;
+    }
     .category-block {
       background: #fff;
       border: 1px solid var(--line);
