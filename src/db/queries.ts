@@ -268,6 +268,17 @@ export async function insertFeedback(
  * 困りごとデータ（lifeData.ts）をDBへ投入（upsert）。
  * D1 Database batch を使って一括実行し、タイムアウトを防ぎます。
  */
+function resolveConsultType(categorySlug: string, topicSlug: string, explicit?: string): string {
+  if (explicit) return explicit;
+  if (categorySlug === 'housing') return 'real_estate';
+  if (categorySlug === 'parents-care') return 'nursing';
+  if (categorySlug === 'end-of-life') {
+    const realEstateTopics = new Set(['inheritance', 'inherited-house', 'house-became-vacant', 'property-tax-inheritance']);
+    if (realEstateTopics.has(topicSlug)) return 'real_estate';
+  }
+  return 'other';
+}
+
 export async function seedTroubleGuides(
   db: D1Database,
   municipalityId: string
@@ -310,7 +321,7 @@ export async function seedTroubleGuides(
              ON CONFLICT(municipality_id, slug) DO UPDATE SET
                title=excluded.title, icon=excluded.icon, summary=excluded.summary, display_order=excluded.display_order, rank=excluded.rank, status=excluded.status, consult_type=excluded.consult_type, updated_at=excluded.updated_at`
           )
-          .bind(topicId, municipalityId, catId, top.slug, top.title, top.icon, top.summary, tIdx + 1, top.rank, 'published', top.consult_type || 'other', now, now)
+          .bind(topicId, municipalityId, catId, top.slug, top.title, top.icon, top.summary, tIdx + 1, top.rank, 'published', resolveConsultType(cat.slug, top.slug, top.consult_type), now, now)
       );
       topicCount++;
 

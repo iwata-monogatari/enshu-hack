@@ -270,8 +270,6 @@ function feedbackScript(municipalityId: string, guideId: string): string {
 
 /** 相談カード並び順を動的にソートしてHTMLを生成するヘルパー関数 */
 export function getSortedConsultCtaHtml(catSlug: string, consultType?: string): string {
-  const isConsultCategory = catSlug === 'housing' || catSlug === 'parents-care' || catSlug === 'end-of-life';
-  if (!isConsultCategory) return '';
 
   const cardStory = `
           <!-- カード: 磐田物語 -->
