@@ -6,14 +6,16 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "node ./scripts/blocked-deploy.mjs",
     "db:create": "wrangler d1 create iwata-hack-db",
     "db:schema:local": "wrangler d1 execute iwata-hack-db --local --file=./src/db/schema.sql",
     "db:seed:local": "wrangler d1 execute iwata-hack-db --local --file=./src/db/seed.sql",
     "db:schema": "wrangler d1 execute iwata-hack-db --remote --file=./src/db/schema.sql",
     "db:seed": "wrangler d1 execute iwata-hack-db --remote --file=./src/db/seed.sql",
     "crawl:local": "wrangler dev --test-scheduled",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy:force": "wrangler deploy",
+    "rollback:confirmed": "wrangler rollback a9392f1e-f9ce-4f21-98cf-9e305e95058a --yes --message \"Restore confirmed Antigravity production version\""
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240605.0",
