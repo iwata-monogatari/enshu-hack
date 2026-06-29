@@ -122,13 +122,6 @@ export function troubleTopBody(
           .join('')
       : '<div class="empty">本日の新着・更新はまだありません。</div>';
 
-  // 13大項目のクイックリンクタグ
-  const quickLinksHtml = categories.map(c => `
-    <a href="${base}/life/${c.slug}/" style="display:inline-block; background:#f0f4f8; color:var(--green-d); padding:6px 12px; border-radius:20px; font-size:13.5px; font-weight:700; text-decoration:none; margin: 4px; border: 1px solid var(--line); transition: background 0.2s;">
-      ${esc(c.title)}
-    </a>
-  `).join('');
-
   return `
   ${emergencyMode ? `
     <div class="emergency-alert" style="background:#fbe2e2; border: 2px solid #b3261e; border-radius:14px; padding:16px; margin: 0 0 16px 0; color:#b3261e; font-weight:800;">
@@ -136,18 +129,9 @@ export function troubleTopBody(
     </div>
   ` : ''}
 
-  <div class="hero-section" style="text-align:center;">
-    <h2 class="askbig" style="font-size:26px; margin-top:10px; font-weight:800; color:var(--green-d);">今、何を知りたいですか？</h2>
-    
-    <div class="quick-categories" style="margin: 16px 0 12px 0; padding: 8px; background:#fff; border-radius:14px; border: 1px solid var(--line);">
-      ${quickLinksHtml}
-    </div>
-    
-    <div style="background:#fff3f3; border: 1.5px solid #ffd1d1; border-radius:12px; padding:12px; font-size:14px; color:#b3261e; font-weight:700; margin:12px 0; text-align:center; line-height:1.5;">
-      ⚠ 磐田ライフハックは磐田市公式サイトではありません。最新・正確な情報は必ず公式ページで確認してください。
-    </div>
-    
-    <p class="lead" style="font-size:15.5px; line-height:1.6; color:var(--ink); margin-top:12px;">磐田市公式情報をもとに、暮らしの手続き・施設・防災・子育て・介護を、市民目線でわかりやすく案内します。</p>
+  <div class="hero-section">
+    <h2 class="askbig" style="font-size:26px; margin-top:10px;">今、何を知りたいですか？</h2>
+    <p class="lead" style="font-size:16px; line-height:1.6;">磐田市公式情報をもとに、暮らしの手続き・施設・防災・子育て・介護を、市民目線でわかりやすく案内します。</p>
   </div>
 
   <form class="searchbox" action="${base}/navigate" method="get" role="search" style="margin-bottom: 28px;">
