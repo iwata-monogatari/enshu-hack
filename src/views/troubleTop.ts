@@ -1,5 +1,6 @@
 import type { DailyChange, Municipality, LifeCategoryRow, LifeTopicRow } from '../types';
 import { esc } from '../util';
+import { getSortedConsultCtaHtml } from './lifeTopic';
 
 export function troubleTopBody(
   muni: Municipality,
@@ -249,10 +250,7 @@ export function troubleTopBody(
     ${updates}
   </div>
 
-  <div class="care-cta" style="margin-top:24px;">
-    <b>介護・住まいのご相談</b><br>
-    磐田市での介護施設さがし、高齢者支援、地域包括支援センターのこと、また実家・空き家・相続した家の整理については、運営の富士ヶ丘サービスへお気軽にご相談ください。
-  </div>
+  ${getSortedConsultCtaHtml('other', undefined, muni.slug).replace('margin-top: 36px;', 'margin-top: 24px;')}
 
   <style>
     .life-categories-collapsible {

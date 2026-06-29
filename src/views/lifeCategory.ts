@@ -23,7 +23,7 @@ export function lifeCategoryBody(
   `).join('');
 
   // 相談導線の表示判定 (家・住まい housing, 親のこと parents-care, 人生の終わり end-of-life) と並び替え
-  const consultCtaHtml = getSortedConsultCtaHtml(category.slug);
+  const consultCtaHtml = getSortedConsultCtaHtml(category.slug, undefined, muni.slug);
 
   return `
     <p class="muted" style="font-size:13px; margin-bottom:8px;">

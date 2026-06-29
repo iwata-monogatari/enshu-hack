@@ -162,7 +162,7 @@ export function lifeTopicBody(
   `;
 
   // 相談導線の表示判定と動的ソート
-  const consultCtaHtml = getSortedConsultCtaHtml(catSlug, consultType);
+  const consultCtaHtml = getSortedConsultCtaHtml(catSlug, consultType, muni.slug);
 
   // AI相談・キーワードから探す導線
   const aiSearchCtaHtml = `
@@ -269,7 +269,7 @@ function feedbackScript(municipalityId: string, guideId: string): string {
 }
 
 /** 相談カード並び順を動的にソートしてHTMLを生成するヘルパー関数 */
-export function getSortedConsultCtaHtml(catSlug: string, consultType?: string): string {
+export function getSortedConsultCtaHtml(catSlug: string, consultType?: string, muniSlug = 'iwata'): string {
 
   const cardStory = `
           <!-- カード: 磐田物語 -->
@@ -365,6 +365,9 @@ export function getSortedConsultCtaHtml(catSlug: string, consultType?: string): 
     ordered = [cardNursing, cardRealEstate, cardStory];
   } else {
     ordered = [cardStory, cardRealEstate, cardNursing];
+  }
+  if (muniSlug !== 'iwata') {
+    ordered = ordered.filter((card) => !card.includes('<!-- カード: 磐田物語 -->'));
   }
 
   return `

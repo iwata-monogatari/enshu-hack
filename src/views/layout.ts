@@ -12,9 +12,9 @@ body{margin:0;font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic U
 a{color:var(--green-d);text-decoration:none}a:hover{text-decoration:underline}
 .wrap{max-width:920px;margin:0 auto;padding:0 16px}
 header.site{background:var(--green);color:#fff}
-header.site .wrap{display:flex;align-items:center;gap:12px;padding:14px 16px}
-header.site .logo{font-weight:800;font-size:20px;color:#fff}
-header.site .tag{font-size:12px;opacity:.85}
+header.site .wrap{display:flex;align-items:center;gap:12px;padding:14px 16px;flex-wrap:nowrap;overflow:hidden}
+header.site .logo{font-weight:800;font-size:20px;color:#fff;white-space:nowrap;flex:0 0 auto}
+header.site .tag{font-size:12px;opacity:.85;white-space:nowrap;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis}
 nav.cats{background:var(--green-d)}
 nav.cats .wrap{display:flex;flex-wrap:wrap;gap:2px;padding:0 16px}
 nav.cats a{color:#eafaf3;padding:10px 12px;font-size:14px;font-weight:600}
@@ -167,13 +167,15 @@ export function layout(opts: LayoutOpts): string {
 </head><body>
 <header class="site"><div class="wrap">
   <a class="logo" href="${base}/">${esc(brand)}</a>
+  <span class="tag">${esc(`${muni.short_name}の暮らしと手続きを市民目線で整理`)}</span>
 </div></header>
 <div class="disclaimer"><div class="wrap">⚠ ${esc(disclaimerText(muni))}</div></div>
 <main><div class="wrap">${body}</div></main>
 <footer class="site"><div class="wrap">
   <div><b style="color:#fff">${esc(brand)}</b></div>
-  <div class="muted" style="margin:6px 0 10px">運営：富士ヶ丘サービス ／ 代表：大石浩之</div>
+  <div class="muted" style="margin:6px 0 10px">運営：富士ヶ丘サービス株式会社/電話番号0538-31-3308</div>
   <div>${isEnshu ? '<a href="/enshu/" style="color:#fff;">遠州ライフハック</a>' : `<a href="${esc(muni.official_base_url)}" rel="noopener" style="color:#fff;">${esc(muni.name)}公式サイト ↗</a>`}</div>
+  <div class="muted" style="margin-top:10px;font-size:12px">遠州ライフハックの他：袋井ライフハック（準備中）・掛川ライフハック（準備中）・浜松ライフハック（準備中）・森町ライフハック（準備中）</div>
   <div class="muted" style="margin-top:10px;font-size:12px">本サイトは公式情報の転載サイトではありません。公式情報を整理・分類し、最終的に必ず公式ページへご案内します。</div>
 </div></footer>
 </body></html>`;
