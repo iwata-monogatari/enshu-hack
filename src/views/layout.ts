@@ -167,9 +167,7 @@ export function layout(opts: LayoutOpts): string {
 </head><body>
 <header class="site"><div class="wrap">
   <a class="logo" href="${base}/">${esc(brand)}</a>
-  <span class="tag">${isEnshu ? '遠州エリア統合ポータル' : `${esc(muni.name)}の暮らしの情報を、たどりやすく`}</span>
 </div></header>
-${nav ? `<nav class="cats"><div class="wrap">${nav}</div></nav>` : ''}
 <div class="disclaimer"><div class="wrap">⚠ ${esc(disclaimerText(muni))}</div></div>
 <main><div class="wrap">${body}</div></main>
 <footer class="site"><div class="wrap">
