@@ -31,7 +31,7 @@ export interface SeedCategory {
 export const LIFE_DATA: SeedCategory[] = [
   {
     slug: 'living-soon',
-    title: 'これから磐田で暮らす',
+    title: 'これから暮らす',
     subtitle: '移住の検討や学校区、交通の便など、磐田での暮らしを計画されている方に',
     icon: '🌱',
     topics: [
@@ -119,7 +119,7 @@ export const LIFE_DATA: SeedCategory[] = [
   },
   {
     slug: 'start-living',
-    title: '磐田で暮らし始める',
+    title: '暮らし始めた',
     subtitle: '住民票の手続きやマイナンバー、ごみ出し、ライフラインなど引っ越し直後の手続き',
     icon: '🚚',
     topics: [
