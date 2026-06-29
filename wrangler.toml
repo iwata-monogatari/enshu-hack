@@ -1,0 +1,35 @@
+name = "iwata-hack"
+main = "src/index.ts"
+compatibility_date = "2024-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─────────────────────────────────────────────
+# D1 データベース
+# 初回は `npm run db:create` で作成し、出力された database_id を貼り付ける。
+# ─────────────────────────────────────────────
+[[d1_databases]]
+binding = "DB"
+database_name = "iwata-hack-db"
+database_id = "e0535f88-b1e5-487a-a604-ca92e567b395"
+
+# ─────────────────────────────────────────────
+# 静的アセット (public/ : robots.txt, favicon.svg)
+# ─────────────────────────────────────────────
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# ─────────────────────────────────────────────
+# 日次クロール (毎日 06:00 JST = 21:00 UTC 前日)
+# ─────────────────────────────────────────────
+[triggers]
+crons = ["0 21 * * *"]
+
+[vars]
+# 既定で表示する自治体スラッグ（"/" アクセス時）
+DEFAULT_MUNICIPALITY = "iwata"
+# 1回のクロールで本文取得する最大ページ数（Workers のサブリクエスト上限対策）
+MAX_PAGES_PER_RUN = "400"
+# CRAWL_TOKEN は平文varではなく secret で管理する:
+#   npx wrangler secret put CRAWL_TOKEN
+# ローカルdevは .dev.vars に CRAWL_TOKEN=... を置く。

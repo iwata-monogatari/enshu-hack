@@ -1,0 +1,115 @@
+// ============================================================
+// 磐田ハック / 遠州ハック  Cloudflare Worker エントリ
+//  - fetch     : ルーティング（自治体トップ / カテゴリ / 記事 / 遠州 / 管理）
+//  - scheduled : 日次クロール（cron）
+// ============================================================
+
+import type { Env } from './types';
+import { getMunicipalityBySlug } from './db/queries';
+import { renderMunicipalityTop } from './routes/municipality';
+import { renderCategory } from './routes/category';
+import { renderArticle } from './routes/article';
+import { renderEnshuTop, renderEnshuCategory } from './routes/enshu';
+import { crawlActive, crawlBySlug } from './crawler/runCrawl';
+import { htmlResponse } from './views/layout';
+
+export default {
+  async fetch(req: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(req.url);
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    const seg = path.split('/').filter(Boolean); // [] for '/'
+
+    try {
+      // 静的アセット（robots.txt / favicon 等）は ASSETS へ委譲
+      if (path === '/robots.txt' || path === '/favicon.svg' || path === '/favicon.ico') {
+        return env.ASSETS.fetch(req);
+      }
+
+      // 管理: 手動クロール実行  /admin/crawl?token=...&muni=iwata
+      if (path === '/admin/crawl') {
+        return await handleAdminCrawl(req, env, url);
+      }
+
+      // 動的サイトマップ
+      if (path === '/sitemap.xml') {
+        return await renderSitemapXml(env, url);
+      }
+
+      // ルート "/" → 既定自治体トップ
+      if (seg.length === 0) {
+        const muni = await getMunicipalityBySlug(env.DB, env.DEFAULT_MUNICIPALITY || 'iwata');
+        if (!muni) return text('既定の自治体が見つかりません。seed を投入してください。', 500);
+        return await renderMunicipalityTop(env, muni);
+      }
+
+      // 遠州ハック  /enshu , /enshu/:categoryId
+      if (seg[0] === 'enshu') {
+        if (seg.length === 1) return await renderEnshuTop(env);
+        return await renderEnshuCategory(env, seg[1]);
+      }
+
+      // 自治体配下  /:slug , /:slug/category/:id , /:slug/article/:slug
+      const muni = await getMunicipalityBySlug(env.DB, seg[0]);
+      if (!muni) return notFound();
+
+      if (seg.length === 1) return await renderMunicipalityTop(env, muni);
+      if (seg[1] === 'category' && seg[2]) return await renderCategory(env, muni, seg[2]);
+      if (seg[1] === 'article' && seg[2]) return await renderArticle(env, muni, seg[2]);
+
+      return notFound();
+    } catch (e: any) {
+      return text(`内部エラー: ${e?.message || String(e)}`, 500);
+    }
+  },
+
+  // 日次クロール
+  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(
+      (async () => {
+        const reports = await crawlActive(env);
+        for (const r of reports) {
+          console.log(`[crawl] ${r.municipalityId}`, JSON.stringify(r));
+        }
+      })(),
+    );
+  },
+};
+
+// ---- 管理: 手動クロール ----
+async function handleAdminCrawl(req: Request, env: Env, url: URL): Promise<Response> {
+  const token = url.searchParams.get('token');
+  if (!env.CRAWL_TOKEN || token !== env.CRAWL_TOKEN) {
+    return text('unauthorized', 401);
+  }
+  const muniSlug = url.searchParams.get('muni');
+  const reports = muniSlug
+    ? [await crawlBySlug(env, muniSlug)].filter(Boolean)
+    : await crawlActive(env);
+  return new Response(JSON.stringify(reports, null, 2), {
+    headers: { 'content-type': 'application/json; charset=utf-8' },
+  });
+}
+
+// ---- 動的 sitemap.xml（有効自治体トップ + 遠州） ----
+async function renderSitemapXml(env: Env, url: URL): Promise<Response> {
+  const origin = `${url.protocol}//${url.host}`;
+  const r = await env.DB.prepare('SELECT slug FROM municipalities WHERE is_active = 1').all<{ slug: string }>();
+  const locs = [`${origin}/`, `${origin}/enshu/`];
+  for (const m of r.results ?? []) locs.push(`${origin}/${m.slug}/`);
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    locs.map((l) => `  <url><loc>${l}</loc></url>`).join('\n') +
+    `\n</urlset>`;
+  return new Response(xml, { headers: { 'content-type': 'application/xml; charset=utf-8' } });
+}
+
+function notFound(): Response {
+  return htmlResponse(
+    '<!doctype html><meta charset="utf-8"><title>404</title><div style="font-family:sans-serif;padding:40px"><h1>404 Not Found</h1><p><a href="/">トップへ</a></p></div>',
+    404,
+  );
+}
+
+function text(s: string, status = 200): Response {
+  return new Response(s, { status, headers: { 'content-type': 'text/plain; charset=utf-8' } });
+}

@@ -1,0 +1,23 @@
+{
+  "name": "iwata-hack",
+  "version": "1.1.0",
+  "description": "磐田ハック - 遠州ハック構想対応のマルチ自治体対応地域情報サイト (Cloudflare Workers + D1)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create iwata-hack-db",
+    "db:schema:local": "wrangler d1 execute iwata-hack-db --local --file=./src/db/schema.sql",
+    "db:seed:local": "wrangler d1 execute iwata-hack-db --local --file=./src/db/seed.sql",
+    "db:schema": "wrangler d1 execute iwata-hack-db --remote --file=./src/db/schema.sql",
+    "db:seed": "wrangler d1 execute iwata-hack-db --remote --file=./src/db/seed.sql",
+    "crawl:local": "wrangler dev --test-scheduled",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240605.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^3.60.0"
+  }
+}

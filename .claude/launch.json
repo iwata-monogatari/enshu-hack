@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "iwata-hack-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "dev", "--port", "8810", "--ip", "127.0.0.1", "--local"],
+      "port": 8810
+    }
+  ]
+}
