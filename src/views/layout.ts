@@ -175,7 +175,18 @@ export function layout(opts: LayoutOpts): string {
   <div><b style="color:#fff">${esc(brand)}</b></div>
   <div class="muted" style="margin:6px 0 10px">運営：富士ヶ丘サービス株式会社/電話番号0538-31-3308</div>
   <div>${isEnshu ? '<a href="/enshu/" style="color:#fff;">遠州ライフハック</a>' : `<a href="${esc(muni.official_base_url)}" rel="noopener" style="color:#fff;">${esc(muni.name)}公式サイト ↗</a>`}</div>
-  <div class="muted" style="margin-top:10px;font-size:12px">遠州ライフハックの他：袋井ライフハック（準備中）・掛川ライフハック（準備中）・浜松ライフハック（準備中）・森町ライフハック（準備中）</div>
+  <div class="muted" style="margin-top:14px;font-size:12px;line-height:1.7">
+    <div style="color:#fff;font-weight:700;margin-bottom:4px">近日運用予定</div>
+    <div>袋井ライフハック　準備中</div>
+    <div>掛川ライフハック　準備中</div>
+    <div>森町ライフハック　準備中</div>
+    <div>菊川市ライフハック　準備中</div>
+    <div>御前崎市ライフハック　準備中</div>
+    <div>湖西市ライフハック　準備中</div>
+    <div>浜松市中央区ライフハック　準備中</div>
+    <div>浜松市浜名区ライフハック　準備中</div>
+    <div>浜松市天竜区ライフハック　準備中</div>
+  </div>
   <div class="muted" style="margin-top:10px;font-size:12px">本サイトは公式情報の転載サイトではありません。公式情報を整理・分類し、最終的に必ず公式ページへご案内します。</div>
 </div></footer>
 </body></html>`;
