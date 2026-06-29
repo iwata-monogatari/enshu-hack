@@ -167,7 +167,7 @@ export function layout(opts: LayoutOpts): string {
 </head><body>
 <header class="site"><div class="wrap">
   <a class="logo" href="${base}/">${esc(brand)}</a>
-  <span class="tag">${esc(`${muni.short_name}の暮らしと手続きを市民目線で整理`)}</span>
+  <span class="tag">${esc(`${muni.short_name}の暮らしと手続きが、すぐわかる`)}</span>
 </div></header>
 <div class="disclaimer"><div class="wrap">⚠ ${esc(disclaimerText(muni))}</div></div>
 <main><div class="wrap">${body}</div></main>
