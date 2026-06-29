@@ -175,7 +175,7 @@ ${nav ? `<nav class="cats"><div class="wrap">${nav}</div></nav>` : ''}
 <footer class="site"><div class="wrap">
   <div><b style="color:#fff">${esc(brand)}</b></div>
   <div class="muted" style="margin:6px 0 10px">運営：富士ヶ丘サービス ／ 代表：大石浩之</div>
-  <div>${isEnshu ? '' : `<a href="${esc(muni.official_base_url)}" rel="noopener">${esc(muni.name)}公式サイト ↗</a> ／ `}<a href="/enshu/">遠州ライフハック</a></div>
+  <div>${isEnshu ? '<a href="/enshu/" style="color:#fff;">遠州ライフハック</a>' : `<a href="${esc(muni.official_base_url)}" rel="noopener" style="color:#fff;">${esc(muni.name)}公式サイト ↗</a>`}</div>
   <div class="muted" style="margin-top:10px;font-size:12px">本サイトは公式情報の転載サイトではありません。公式情報を整理・分類し、最終的に必ず公式ページへご案内します。</div>
 </div></footer>
 </body></html>`;
