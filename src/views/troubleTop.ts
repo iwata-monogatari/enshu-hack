@@ -35,17 +35,16 @@ export function troubleTopBody(
     return `${base}/life/${catSlug}/`;
   };
 
-  // 6.2 最初に表示する8カード
-  // emergencyMode の場合は防災カードを一番目立たせる（アニメーションや赤枠などで強調）
+  // 6.2 最初に表示する8カード（主語・述語に統一）
   const cards = [
     { title: '🌱 磐田市に住みたい', href: getTopicLink('living-soon', 'want-to-live') },
     { title: '🚚 磐田市へ引っ越してきた', href: getTopicLink('start-living', 'moved-in') },
-    { title: '🏠 家・住まい', href: `${base}/life/housing/` },
-    { title: '🗑️ ごみを出したい', href: getTopicLink('start-living', 'how-to-garbage') },
+    { title: '🏠 家・住まいで探す、困っている', href: `${base}/life/housing/` },
+    { title: '🗑️ ごみを出したい、捨てたい', href: getTopicLink('start-living', 'how-to-garbage') },
     { title: '🌳 公園・施設を探したい', href: getTopicLink('play-out', 'find-parks') },
-    { title: '👶 子育て', href: `${base}/life/family-grow/` },
-    { title: '🧓 介護・親のこと', href: `${base}/life/parents-care/` },
-    { title: '🚨 防災・緊急', href: `${base}/life/emergency/`, isUrgent: true }
+    { title: '👶 子育てでわからない、困っている', href: `${base}/life/family-grow/` },
+    { title: '🧓 介護・親のことでわからない、困っている', href: `${base}/life/parents-care/` },
+    { title: '🚨 避難情報・災害リスクを確認する', href: `${base}/life/emergency/`, isUrgent: true }
   ];
 
   // emergencyMode の場合は防災カードを先頭にする
@@ -161,13 +160,7 @@ export function troubleTopBody(
     ${cardsHtml}
   </div>
 
-  <div class="more-section" style="text-align: center; margin: 24px 0 32px 0;">
-    <button id="more-btn" class="print-btn" style="min-height: 48px; min-width: 200px; justify-content: center; font-size:16px; border-color:var(--green); color:var(--green-d); cursor:pointer;">
-      👇 もっと探す（生活ガイドを表示）
-    </button>
-  </div>
-
-  <div id="life-categories-section" style="display: none;">
+  <div id="life-categories-section" style="margin-bottom: 32px;">
     <h2 class="sec">生活ナビゲーション（13大項目）</h2>
     <div class="life-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
       ${categoriesListHtml}
@@ -185,17 +178,6 @@ export function troubleTopBody(
     <b>介護・住まいのご相談</b><br>
     磐田市での介護施設さがし、高齢者支援、地域包括支援センターのこと、また実家・空き家・相続した家の整理については、運営の富士ヶ丘サービスへお気軽にご相談ください。
   </div>
-
-  <script>
-    document.getElementById('more-btn')?.addEventListener('click', function() {
-      const sec = document.getElementById('life-categories-section');
-      if (sec) {
-        sec.style.display = 'block';
-        this.style.display = 'none';
-        sec.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  </script>
 
   <style>
     .category-block {
