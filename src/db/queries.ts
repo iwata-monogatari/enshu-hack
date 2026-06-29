@@ -8,7 +8,12 @@ import type {
   DailyChange,
   Municipality,
   OfficialPage,
+  TroubleGuideRow,
+  ProcedureStepRow,
+  FeedbackType,
 } from '../types';
+import { TROUBLE_GUIDES, LAST_VERIFIED } from '../data/troubleGuides';
+import { nowISO, uuid } from '../util';
 
 export async function getActiveMunicipalities(db: D1Database): Promise<Municipality[]> {
   const r = await db
@@ -165,4 +170,126 @@ export async function getEnshuIndex(db: D1Database, categoryId?: string, limit =
     .bind(limit)
     .all();
   return r.results ?? [];
+}
+
+// ===== 困りごと（スマホファースト v1.0） ====================
+
+/** 公開中の困りごとガイド一覧（トップのカード用） */
+export async function getTroubleGuides(
+  db: D1Database,
+  municipalityId: string,
+): Promise<TroubleGuideRow[]> {
+  const r = await db
+    .prepare(
+      `SELECT * FROM trouble_guides
+       WHERE municipality_id = ? AND status = 'published'
+       ORDER BY display_order`,
+    )
+    .bind(municipalityId)
+    .all<TroubleGuideRow>();
+  return r.results ?? [];
+}
+
+export async function getTroubleGuide(
+  db: D1Database,
+  municipalityId: string,
+  slug: string,
+): Promise<TroubleGuideRow | null> {
+  return await db
+    .prepare('SELECT * FROM trouble_guides WHERE municipality_id = ? AND slug = ?')
+    .bind(municipalityId, slug)
+    .first<TroubleGuideRow>();
+}
+
+export async function getProcedureSteps(
+  db: D1Database,
+  troubleGuideId: string,
+): Promise<ProcedureStepRow[]> {
+  const r = await db
+    .prepare('SELECT * FROM procedure_steps WHERE trouble_guide_id = ? ORDER BY step_order')
+    .bind(troubleGuideId)
+    .all<ProcedureStepRow>();
+  return r.results ?? [];
+}
+
+/** フィードバック記録（個人情報なし） */
+export async function insertFeedback(
+  db: D1Database,
+  municipalityId: string,
+  troubleGuideId: string | null,
+  feedbackType: FeedbackType,
+  freeword: string | null,
+): Promise<void> {
+  await db
+    .prepare(
+      `INSERT INTO feedback_logs (id, municipality_id, trouble_guide_id, feedback_type, freeword, created_at)
+       VALUES (?,?,?,?,?,?)`,
+    )
+    .bind(uuid(), municipalityId, troubleGuideId, feedbackType, freeword, nowISO())
+    .run();
+}
+
+/**
+ * 困りごとデータ（troubleGuides.ts）をDBへ投入（upsert）。
+ * 全自治体共通の出来事IDを、指定自治体ぶん展開する。冪等。
+ */
+export async function seedTroubleGuides(db: D1Database, municipalityId: string): Promise<{ guides: number; steps: number }> {
+  const now = nowISO();
+  let guideCount = 0;
+  let stepCount = 0;
+  for (let i = 0; i < TROUBLE_GUIDES.length; i++) {
+    const g = TROUBLE_GUIDES[i];
+    const guideId = `${municipalityId}__tg__${g.slug}`;
+    const stmts: D1PreparedStatement[] = [];
+    stmts.push(
+      db
+        .prepare(
+          `INSERT INTO trouble_guides
+             (id, municipality_id, slug, title, situation_label, summary, first_action, target_person,
+              priority, display_order, last_verified_at, status, created_at, updated_at)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+           ON CONFLICT(municipality_id, slug) DO UPDATE SET
+             title=excluded.title, situation_label=excluded.situation_label, summary=excluded.summary,
+             first_action=excluded.first_action, target_person=excluded.target_person, priority=excluded.priority,
+             display_order=excluded.display_order, last_verified_at=excluded.last_verified_at,
+             status=excluded.status, updated_at=excluded.updated_at`,
+        )
+        .bind(
+          guideId, municipalityId, g.slug, g.title, g.situation_label, g.summary, g.first_action,
+          g.target_person ?? null, g.priority, i + 1, LAST_VERIFIED, 'published', now, now,
+        ),
+    );
+    // ステップは作り直し（重複防止）
+    stmts.push(db.prepare('DELETE FROM procedure_steps WHERE trouble_guide_id = ?').bind(guideId));
+    for (const s of g.steps) {
+      stmts.push(
+        db
+          .prepare(
+            `INSERT INTO procedure_steps
+               (id, trouble_guide_id, step_order, timing, task_name, deadline, window_name, required_items,
+                official_page_id, outside_agency, is_municipal, nav_tags, note)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          )
+          .bind(
+            `${guideId}__s${s.step_order}`,
+            guideId,
+            s.step_order,
+            s.timing,
+            s.task_name,
+            s.deadline ?? null,
+            s.window_name ?? null,
+            s.required_items ? s.required_items.join('\n') : null,
+            null,
+            s.outside_agency ?? null,
+            s.is_municipal,
+            s.nav_tags ? s.nav_tags.join(',') : null,
+            s.note ?? null,
+          ),
+      );
+      stepCount++;
+    }
+    await db.batch(stmts);
+    guideCount++;
+  }
+  return { guides: guideCount, steps: stepCount };
 }

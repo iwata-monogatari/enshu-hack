@@ -118,3 +118,63 @@ CREATE TABLE IF NOT EXISTS enshu_index (
   UNIQUE (municipality_id, url)
 );
 CREATE INDEX IF NOT EXISTS idx_enshu_cat ON enshu_index (normalized_category_id);
+
+-- ============================================================
+-- スマホファースト v1.0 追加: 困りごと中心のデータ構造
+-- サイトの主役を official_pages から trouble_guides へ移す。
+-- slug は全自治体共通の「出来事ID」(death/birth/...) とする。
+-- ============================================================
+
+-- ----- 困りごとガイド（市民の入口） --------------------------
+CREATE TABLE IF NOT EXISTS trouble_guides (
+  id               TEXT PRIMARY KEY,
+  municipality_id  TEXT NOT NULL,
+  slug             TEXT NOT NULL,          -- 出来事ID（共通）: death, moving_in, ...
+  title            TEXT NOT NULL,
+  situation_label  TEXT,                   -- トップのカード文言「家族が亡くなった」等
+  summary          TEXT,
+  first_action     TEXT,                   -- 最初に出す「行動」一文
+  target_person    TEXT,
+  priority         TEXT,                   -- A+/A/B（並び順）
+  display_order    INTEGER,
+  last_verified_at TEXT,
+  status           TEXT,                   -- published / draft
+  created_at       TEXT,
+  updated_at       TEXT,
+  FOREIGN KEY (municipality_id) REFERENCES municipalities(id),
+  UNIQUE (municipality_id, slug)
+);
+CREATE INDEX IF NOT EXISTS idx_guides_muni ON trouble_guides (municipality_id, display_order);
+
+-- ----- 手順ステップ（具体的行動） ----------------------------
+CREATE TABLE IF NOT EXISTS procedure_steps (
+  id               TEXT PRIMARY KEY,
+  trouble_guide_id TEXT NOT NULL,
+  step_order       INTEGER NOT NULL,
+  timing           TEXT,                   -- today / this_week / later
+  task_name        TEXT NOT NULL,
+  deadline         TEXT,
+  window_name      TEXT,                   -- 窓口名（市民課 等）
+  required_items   TEXT,                   -- 持ち物（改行区切り）
+  official_page_id TEXT,                   -- official_pages への参照（任意）
+  outside_agency   TEXT,                   -- 市役所以外（法務局・年金事務所 等）
+  is_municipal     INTEGER DEFAULT 1,      -- 1=市役所でやる / 0=市役所以外
+  nav_tags         TEXT,                   -- 3問ナビ用タグ（insurance,realestate 等）
+  note             TEXT,
+  FOREIGN KEY (trouble_guide_id) REFERENCES trouble_guides(id),
+  FOREIGN KEY (official_page_id) REFERENCES official_pages(id)
+);
+CREATE INDEX IF NOT EXISTS idx_steps_guide ON procedure_steps (trouble_guide_id, step_order);
+
+-- ----- フィードバック（「助かった」を測る／個人情報なし） -----
+CREATE TABLE IF NOT EXISTS feedback_logs (
+  id               TEXT PRIMARY KEY,
+  municipality_id  TEXT NOT NULL,
+  trouble_guide_id TEXT,
+  feedback_type    TEXT NOT NULL,          -- solved / still_worried / could_not_find / wrong_page
+  freeword         TEXT,
+  created_at       TEXT,
+  FOREIGN KEY (municipality_id) REFERENCES municipalities(id),
+  FOREIGN KEY (trouble_guide_id) REFERENCES trouble_guides(id)
+);
+CREATE INDEX IF NOT EXISTS idx_feedback_guide ON feedback_logs (trouble_guide_id, created_at);

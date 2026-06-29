@@ -43,6 +43,83 @@ footer.site a{color:#9fe3c8}
 .care-cta{background:#f0f7f3;border:1px solid #cfe5da;border-radius:10px;padding:14px 16px;margin:16px 0}
 .care-cta b{color:var(--green-d)}
 .muted{color:var(--mut)}
+
+/* ===== スマホファースト v1.0 ===== */
+html{font-size:17px}
+.wrap{max-width:760px}
+.lead{font-size:15px;color:var(--mut);margin:2px 0 14px}
+.askbig{font-size:21px;font-weight:800;margin:22px 0 6px;color:var(--green-d)}
+/* 困りごとカード（1画面1判断・タップ44px以上） */
+.sit-list{display:flex;flex-direction:column;gap:10px}
+.sit-card{display:flex;align-items:center;gap:12px;min-height:60px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-size:17.5px;font-weight:700;color:var(--ink)}
+.sit-card:hover{text-decoration:none;border-color:var(--green);background:#f3faf6}
+.sit-card .arw{margin-left:auto;color:var(--green);font-weight:800;font-size:20px}
+.sit-card .ic{font-size:22px;line-height:1}
+/* 緊急・重要カード */
+.urgent-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.u-card{display:flex;flex-direction:column;gap:4px;min-height:64px;border-radius:14px;padding:13px 14px;font-weight:800;font-size:16px;color:#fff}
+.u-card .s{font-size:12px;font-weight:600;opacity:.92}
+.u-bousai{background:#c0461e}.u-care{background:#1f6f54}.u-gomi{background:#3a6ea5}.u-iryo{background:#8a3ea5}
+/* 検索（主役にしない・控えめ） */
+.searchbox{display:flex;gap:8px;margin:8px 0 4px}
+.searchbox input{flex:1;min-height:46px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font-size:16px}
+.searchbox button{min-height:46px;min-width:64px;border:0;border-radius:12px;background:var(--green);color:#fff;font-weight:700;font-size:16px}
+/* 困りごとページ */
+.first-action{background:#eef6f2;border:1.5px solid #cfe5da;border-radius:14px;padding:16px;font-size:17px;font-weight:700;line-height:1.8;margin:10px 0 4px}
+.timing-block{margin:18px 0}
+.timing-head{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;margin:0 0 8px}
+.timing-today{color:#c0461e}.timing-week{color:#c08a1e}.timing-later{color:#3a6ea5}
+.tdot{width:12px;height:12px;border-radius:50%}
+.tdot.today{background:#c0461e}.tdot.week{background:#c08a1e}.tdot.later{background:#3a6ea5}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:8px 0}
+.step .task{font-size:16.5px;font-weight:700}
+.step .meta{font-size:13px;color:var(--mut);margin-top:5px;line-height:1.7}
+.chip{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 8px;margin-right:6px}
+.chip-muni{background:#e7f1ec;color:#1f6f54}.chip-out{background:#fdeede;color:#a8631a}.chip-deadline{background:#fbe2e2;color:#b3261e}
+.items{margin:6px 0 0;padding-left:18px}
+.items li{font-size:13.5px;color:#445}
+/* 3問ナビ */
+.nav3{background:#fff;border:1.5px solid var(--green);border-radius:14px;padding:14px 16px;margin:14px 0}
+.nav3 h3{margin:0 0 4px;font-size:16px;color:var(--green-d)}
+.nav3 .q{margin:12px 0 0}
+.nav3 .q p{margin:0 0 6px;font-weight:700;font-size:15.5px}
+.toggle{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.toggle button{min-height:44px;min-width:72px;border:0;background:#fff;font-size:15px;font-weight:700;color:#555;padding:0 14px;cursor:pointer}
+.toggle button.on{background:var(--green);color:#fff}
+.nav3 .qnote{font-size:13px;color:#a8631a;margin-top:6px;display:none}
+.step.hidden{display:none}
+/* フィードバック */
+.feedback{background:#f6f7f5;border:1px solid var(--line);border-radius:14px;padding:16px;margin:22px 0 0;text-align:center}
+.feedback h3{margin:0 0 10px;font-size:16px}
+.fb-btns{display:flex;flex-direction:column;gap:8px}
+.fb-btns button{min-height:50px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:15.5px;font-weight:700;color:#333;cursor:pointer}
+.fb-btns button:hover{border-color:var(--green)}
+.fb-thanks{display:none;font-weight:700;color:var(--green-d);padding:8px 0}
+/* 印刷ボタン・PC右カラム */
+.pcrail{display:none}
+.print-btn,.back-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-weight:700;font-size:14px;color:#333}
+.verified{font-size:13px;color:var(--mut);margin-top:12px}
+
+/* ===== PC派生（スマホ構造を保ったまま補助） ===== */
+@media (min-width:760px){
+  html{font-size:16px}
+  .urgent-grid{grid-template-columns:repeat(4,1fr)}
+  .with-rail{display:grid;grid-template-columns:1fr 270px;gap:24px;align-items:start}
+  .pcrail{display:block;position:sticky;top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .pcrail h3{margin:0 0 8px;font-size:15px;color:var(--green-d)}
+  .pcrail ul{margin:0;padding-left:18px;font-size:14px;line-height:1.9}
+  .pcrail .rail-sec{margin-top:14px}
+}
+
+/* ===== 印刷（家族が一緒に確認・電話前チェック） ===== */
+@media print{
+  header.site,nav.cats,.disclaimer,.searchbox,.feedback,.print-btn,.back-link,.care-cta,footer.site,.nav3 .toggle{display:none !important}
+  .step.hidden{display:block !important}
+  .with-rail{display:block}
+  .pcrail{display:block;border:1px solid #999}
+  body{background:#fff;font-size:12pt}
+  .step,.first-action{break-inside:avoid}
+}
 `;
 
 export function disclaimerText(muni: Municipality): string {
