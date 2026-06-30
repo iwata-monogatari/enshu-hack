@@ -193,23 +193,7 @@ export function troubleTopBody(
           .join('')
       : '<div class="empty">本日の新着・更新はまだありません。</div>';
 
-  // 13大カテゴリへのリンク元のHTML
-  const bottomLinksHtml = categories.map(c => `
-    <a href="${base}/life/${c.slug}/" style="display:inline-block; background:#f0f4f8; color:var(--green-d); padding:6px 12px; border-radius:20px; font-size:13.5px; font-weight:700; text-decoration:none; margin: 4px; border: 1px solid var(--line); transition: background 0.2s;">
-      ${esc(c.title)}
-    </a>
-  `).join('');
 
-  const bottomNavHtml = `
-    <div class="bottom-nav-section" style="margin: 32px 0 24px 0; padding: 16px; background:#fff; border-radius:14px; border: 1px solid var(--line);">
-      <h3 style="margin:0 0 12px 0; font-size:15px; color:var(--ink); font-weight:800; border-left: 4px solid var(--green); padding-left: 8px;">
-        磐田市の暮らしの情報を、たどりやすく
-      </h3>
-      <div class="bottom-categories" style="display:flex; flex-wrap:wrap; gap:4px;">
-        ${bottomLinksHtml}
-      </div>
-    </div>
-  `;
 
   return `
   ${emergencyMode ? `
@@ -242,8 +226,6 @@ export function troubleTopBody(
       ${categoriesListHtml}
     </div>
   </details>
-
-  ${bottomNavHtml}
 
   <h2 class="sec">本日の更新${changesAreToday ? '' : '（直近）'}</h2>
   <div class="card" style="margin-bottom:24px;">
